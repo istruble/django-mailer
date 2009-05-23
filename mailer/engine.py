@@ -7,7 +7,8 @@ from socket import error as socket_error
 from mailer.models import Message, DontSendEntry, MessageLog
 
 from django.conf import settings
-from django.core.mail import send_mail as core_send_mail
+from django.core.mail import EmailMessage, EmailMultiAlternatives 
+
 
 # when queue is empty, how long to wait (in seconds) before checking again
 EMPTY_QUEUE_SLEEP = getattr(settings, "MAILER_EMPTY_QUEUE_SLEEP", 30)
@@ -69,7 +70,15 @@ def send_all():
             else:
                 try:
                     logging.info("sending message '%s' to %s" % (message.subject.encode("utf-8"), message.to_address.encode("utf-8")))
-                    core_send_mail(message.subject, message.message_body, message.from_address, [message.to_address])
+                    # Using EmailMessage instead of send_mail since that is basically all send_mail does.
+                    if message.message_body_html is None or len(message.message_body_html) == 0:
+                        logging.debug("message is text only")
+                        EmailMessage(message.subject, message.message_body, message.from_address, [message.to_address]).send()
+                    else:
+                        logging.debug("message is text+html alternative")
+                        msg = EmailMultiAlternatives(message.subject, message.message_body, message.from_address, [message.to_address]) 
+                        msg.attach_alternative(message.message_body_html, "text/html")
+                        msg.send()
                     MessageLog.objects.log(message, 1) # @@@ avoid using literal result code
                     message.delete()
                     sent += 1

@@ -58,13 +58,20 @@ class MessageManager(models.Manager):
 
 
 class Message(models.Model):
-    
+    """
+    Message queue objects for messages that need to be sent.
+
+    Only plaintext and text+html multipart/alternative messages
+    are supported.  Send text+html messages by assigning a value
+    to message_body_html.
+    """
     objects = MessageManager()
     
     to_address = models.CharField(max_length=50)
     from_address = models.CharField(max_length=50)
     subject = models.CharField(max_length=100)
     message_body = models.TextField()
+    message_body_html = models.TextField(null=True)
     when_added = models.DateTimeField(default=datetime.now)
     priority = models.CharField(max_length=1, choices=PRIORITIES, default='2')
     # @@@ campaign?
@@ -118,7 +125,6 @@ RESULT_CODES = (
 )
 
 
-
 class MessageLogManager(models.Manager):
     
     def log(self, message, result_code, log_message = ''):
@@ -132,6 +138,7 @@ class MessageLogManager(models.Manager):
             from_address = message.from_address,
             subject = message.subject,
             message_body = message.message_body,
+            message_body_html = message.message_body_html,
             when_added = message.when_added,
             priority = message.priority,
             # @@@ other fields from Message
@@ -150,6 +157,7 @@ class MessageLog(models.Model):
     from_address = models.CharField(max_length=50)
     subject = models.CharField(max_length=100)
     message_body = models.TextField()
+    message_body_html = models.TextField(null=True)
     when_added = models.DateTimeField()
     priority = models.CharField(max_length=1, choices=PRIORITIES)
     # @@@ campaign?
