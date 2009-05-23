@@ -1,0 +1,27 @@
+[
+  {
+    "pk": "101", 
+    "model": "mailer.message", 
+    "fields": {
+      "message_body": "A simple text message.", 
+      "to_address": "text@example.com", 
+      "from_address": "tester@example.com", 
+      "when_added": "2007-08-07 20:47:53", 
+      "priority": "2", 
+      "subject": "Text is what I want"
+    }
+  }, 
+  {
+    "pk": "102", 
+    "model": "mailer.message", 
+    "fields": {
+      "message_body": "The text message.", 
+      "message_body_html": "The <span style='color: red'>html</span> message.", 
+      "to_address": "text_html@example.com", 
+      "from_address": "tester@example.com", 
+      "when_added": "2007-08-07 20:49:37", 
+      "priority": "2", 
+      "subject": "text + html FTW"
+    }
+  }
+]
