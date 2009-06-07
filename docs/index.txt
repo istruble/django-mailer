@@ -3,6 +3,13 @@
 django-mailer
 =============
 
+Django-mailer is an e-mail message queue for Django.  It allows
+applications to decouple the SMTP network communication portion 
+of sending e-mail messages from the creation portion by queueing 
+messages.
+
+A separate process is used for the actual sending of messages.
+
 Contents:
 
 .. toctree::
